@@ -1,5 +1,9 @@
 import datetime
 import asyncio
+import time
+
+import bs4
+import requests
 
 
 with open("news_sites.txt", "r") as nfile:
@@ -7,15 +11,24 @@ with open("news_sites.txt", "r") as nfile:
 
 
 
-def get_1():
+def get_title():
+    urllist = []
+    time_s= time.monotonic()
     for url in nlist:
-        yield url
+        try:
+            urltitle=[]
+            print(url)
+            reqs= requests.get(url)
+            soup=bs4.BeautifulSoup(reqs.text,"html.parser")
+            for title in soup.find_all("title"):
+                urltitle.append(title.get_text())
+            urllist.append([url,urltitle])
+        except:
+            pass
+    print(time.monotonic() - time_s)
+    return urllist
 
 
-async def get_2():
+for a in get_title():
+    print(a)
 
-    await asyncio.sleep(0)
-    pass
-
-
-endlist = []
